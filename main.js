@@ -1,6 +1,7 @@
 
 const answers = [
-   '58f998155cbd12c2e3812f47f3bd4bf44b571c10048416fa9277abd5d183c4'
+   '58f998155cbd12c2e3812f47f3bd4bf44b571c10048416fa9277abd5d183c4',
+   '38d4467b57ef9c6c4fb296111635f657be938c1aa9c99ad77f34df789eba36'
 ];
 
 document.getElementById('submit-input').value = '';
