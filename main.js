@@ -2,7 +2,8 @@
 const answers = [
    '58f998155cbd12c2e3812f47f3bd4bf44b571c10048416fa9277abd5d183c4',
    '38d4467b57ef9c6c4fb296111635f657be938c1aa9c99ad77f34df789eba36',
-   '1220157f50d86c46f2c1cf380b8957922b41fcd4d80c6be6a4df517c2cbdeda'
+   '1220157f50d86c46f2c1cf380b8957922b41fcd4d80c6be6a4df517c2cbdeda',
+   '1e23ecd6ed7ce722c52e235e790377c93c729e82d9e533395e98f80b8b93d15'
 ];
 
 document.getElementById('submit-input').value = '';
