@@ -10,6 +10,5 @@ def decrypt(encrypted: list) -> str:
 
 
 if __name__ == '__main__':
-
     text = input('Enter string to encrypt: ')
     print(f'Your encrypted bytes are: {encrypt(text)}')
