@@ -36,6 +36,8 @@ function verifyFlag()
             asciiElem.className = 'incorrect';
             resultsElem.textContent = "Couldn't find a matching flag.";
         }
+       
+       setTimeout(() => { asciiElem.className = '' }, 3000);
     });
 }
 
