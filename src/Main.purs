@@ -2,32 +2,24 @@ module Main where
 
 import Prelude
 
+import Control.Promise (Promise, toAff)
+import Data.Either (Either(..))
 import Effect (Effect)
-import Effect.Console (log)
+import Effect.Aff (Aff, attempt, launchAff_, message)
+import Effect.Class.Console as CConsole
 
-import Node.Buffer as Buffer
-import Node.Crypto.Hash (createHash, update, digest)
-import Node.Encoding (Encoding(..))
+foreign import getHash :: String -> Promise String
 
-import Web.HTML (window)
-import Web.HTML.Window (document)
+printHash :: String -> Aff Unit
+printHash text = do 
+    msg <- attempt $ toAff $ getHash text
 
--- Return the SHA-256 hash of a string
-getHash :: String -> Effect String
-getHash str = do 
-    buf      <- Buffer.fromString str UTF8
-    hash     <- createHash "sha256" 
-    updated  <- update buf hash
-    digested <- digest updated
-
-    Buffer.toString Hex digested
+    case msg of 
+        Left e -> CConsole.log $ "Something went wrong: " <> message e
+        Right m -> CConsole.log m
 
 main :: Effect Unit
-main = do 
-    win <- window
-    doc <- document win
-
-    log "Hello, World!"
+main = launchAff_ $ printHash "INSERT FLAG HERE"
 
 answers :: Array String
 answers = [

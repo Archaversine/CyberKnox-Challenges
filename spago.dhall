@@ -12,7 +12,7 @@ to generate this file without the comments in this block.
 -}
 { name = "my-project"
 , dependencies =
-  [ "console", "crypto", "effect", "node-buffer", "prelude", "web-html" ]
+  [ "aff", "aff-promise", "console", "effect", "either", "prelude", "web-html" ]
 , packages = ./packages.dhall
 , sources = [ "src/**/*.purs", "test/**/*.purs" ]
 }
