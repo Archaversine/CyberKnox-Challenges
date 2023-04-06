@@ -9,6 +9,9 @@ import Node.Buffer as Buffer
 import Node.Crypto.Hash (createHash, update, digest)
 import Node.Encoding (Encoding(..))
 
+import Web.HTML (window)
+import Web.HTML.Window (document)
+
 -- Return the SHA-256 hash of a string
 getHash :: String -> Effect String
 getHash str = do 
@@ -21,8 +24,10 @@ getHash str = do
 
 main :: Effect Unit
 main = do 
-    hashed <- getHash "INSERT STRING HERE"
-    log hashed
+    win <- window
+    doc <- document win
+
+    log "Hello, World!"
 
 answers :: Array String
 answers = [
