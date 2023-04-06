@@ -3,7 +3,9 @@ module Main where
 import Prelude
 
 import Control.Promise (Promise, toAff)
+
 import Data.Either (Either(..))
+
 import Effect (Effect)
 import Effect.Aff (Aff, attempt, launchAff_, message)
 import Effect.Class.Console as CConsole
