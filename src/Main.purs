@@ -24,6 +24,7 @@ import Web.Event.EventTarget (addEventListener, eventListener)
 import Web.HTML (window)
 import Web.HTML.Event.EventTypes (click)
 import Web.HTML.HTMLDocument (toDocument)
+import Web.HTML.HTMLInputElement (fromElement, value)
 import Web.HTML.Window (document)
 
 foreign import getHash :: String -> Promise String
@@ -42,7 +43,7 @@ verifyHash element text = do
 
     case hash of 
         Left e -> CConsole.log $ "Error calculating hash: " <> message e
-        Right h -> liftEffect $ setClassName className element
+        Right h -> (liftEffect $ setClassName className element)
             where className
                     | h `elem` answers = "correct"
                     | otherwise = "incorrect"
@@ -53,10 +54,15 @@ onButtonPress _ = do
     doc <- document win 
 
     asciiElem <- getElementById "ascii-logo" $ toNonElementParentNode $ toDocument doc
+    textElem <- getElementById "submit-input" $ toNonElementParentNode $ toDocument doc
+
+    text <- case fromElement =<< textElem of 
+        Nothing -> pure "notext"
+        Just x -> value x
 
     case asciiElem of 
         Nothing -> Console.log "Could not find ascii logo!"
-        Just logo -> launchAff_ $ verifyHash logo "INSERT FLAG HERE"
+        Just logo -> launchAff_ $ verifyHash logo text
 
 main :: Effect Unit
 main = do 

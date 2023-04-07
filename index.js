@@ -2315,6 +2315,35 @@ var toMaybe = function(n) {
   return nullable(n, Nothing.value, Just.create);
 };
 
+// output/Web.Internal.FFI/foreign.js
+function _unsafeReadProtoTagged(nothing, just, name15, value12) {
+  if (typeof window !== "undefined") {
+    var ty = window[name15];
+    if (ty != null && value12 instanceof ty) {
+      return just(value12);
+    }
+  }
+  var obj = value12;
+  while (obj != null) {
+    var proto = Object.getPrototypeOf(obj);
+    var constructorName = proto.constructor.name;
+    if (constructorName === name15) {
+      return just(value12);
+    } else if (constructorName === "Object") {
+      return nothing;
+    }
+    obj = proto;
+  }
+  return nothing;
+}
+
+// output/Web.Internal.FFI/index.js
+var unsafeReadProtoTagged = function(name15) {
+  return function(value12) {
+    return _unsafeReadProtoTagged(Nothing.value, Just.create, name15, value12);
+  };
+};
+
 // output/Web.DOM.Document/index.js
 var toNonElementParentNode = unsafeCoerce2;
 
@@ -2399,6 +2428,16 @@ var windowImpl = function() {
 // output/Web.HTML.HTMLDocument/index.js
 var toDocument = unsafeCoerce2;
 
+// output/Web.HTML.HTMLInputElement/foreign.js
+function value3(input) {
+  return function() {
+    return input.value;
+  };
+}
+
+// output/Web.HTML.HTMLInputElement/index.js
+var fromElement = /* @__PURE__ */ unsafeReadProtoTagged("HTMLInputElement");
+
 // output/Web.HTML.Window/foreign.js
 function document(window2) {
   return function() {
@@ -2425,7 +2464,7 @@ var printHash = function(text5) {
       return log4(msg.value0);
     }
     ;
-    throw new Error("Failed pattern match at Main (line 35, column 5 - line 37, column 34): " + [msg.constructor.name]);
+    throw new Error("Failed pattern match at Main (line 37, column 5 - line 39, column 34): " + [msg.constructor.name]);
   });
 };
 var answers = ["58f998155cbd12c2e3812f47f3bd4bf44b571c10048416fa9277abd5d183c4", "38d4467b57ef9c6c4fb296111635f657be938c1aa9c99ad77f34df789eba36", "1220157f50d86c46f2c1cf380b8957922b41fcd4d80c6be6a4df517c2cbdeda", "1e23ecd6ed7ce722c52e235e790377c93c729e82d9e533395e98f80b8b93d15", "5642f1b7dff894ce51e7b55dd31e61c101f7bc84eb515d28c6f36828b451ff2"];
@@ -2446,12 +2485,12 @@ var verifyHash = function(element) {
             return "incorrect";
           }
           ;
-          throw new Error("Failed pattern match at Main (line 46, column 19 - line 48, column 46): " + []);
+          throw new Error("Failed pattern match at Main (line 48, column 19 - line 50, column 46): " + []);
         }();
         return applySecond2(liftEffect2(setClassName(className2)(element)))(log4("hash: " + hash2.value0));
       }
       ;
-      throw new Error("Failed pattern match at Main (line 43, column 5 - line 48, column 46): " + [hash2.constructor.name]);
+      throw new Error("Failed pattern match at Main (line 45, column 5 - line 50, column 46): " + [hash2.constructor.name]);
     });
   };
 };
@@ -2460,15 +2499,38 @@ var onButtonPress = function(v) {
     var win = windowImpl();
     var doc = document(win)();
     var asciiElem = getElementById("ascii-logo")(toNonElementParentNode(toDocument(doc)))();
+    var textElem = getElementById("submit-input")(toNonElementParentNode(toDocument(doc)))();
+    var textHTMLElement = function() {
+      if (textElem instanceof Nothing) {
+        return Nothing.value;
+      }
+      ;
+      if (textElem instanceof Just) {
+        return fromElement(textElem.value0);
+      }
+      ;
+      throw new Error("Failed pattern match at Main (line 60, column 27 - line 62, column 47): " + [textElem.constructor.name]);
+    }();
+    var text5 = function() {
+      if (textHTMLElement instanceof Nothing) {
+        return "notext";
+      }
+      ;
+      if (textHTMLElement instanceof Just) {
+        return value3(textHTMLElement.value0)();
+      }
+      ;
+      throw new Error("Failed pattern match at Main (line 64, column 13 - line 66, column 26): " + [textHTMLElement.constructor.name]);
+    }();
     if (asciiElem instanceof Nothing) {
       return log2("Could not find ascii logo!")();
     }
     ;
     if (asciiElem instanceof Just) {
-      return launchAff_(verifyHash(asciiElem.value0)("cyberknox{Hello_world}"))();
+      return launchAff_(verifyHash(asciiElem.value0)(text5))();
     }
     ;
-    throw new Error("Failed pattern match at Main (line 57, column 5 - line 59, column 75): " + [asciiElem.constructor.name]);
+    throw new Error("Failed pattern match at Main (line 68, column 5 - line 70, column 55): " + [asciiElem.constructor.name]);
   };
 };
 var main = function __do() {
@@ -2484,7 +2546,7 @@ var main = function __do() {
     return addEventListener(click2)(listener)(true)(toEventTarget(elem1.value0))();
   }
   ;
-  throw new Error("Failed pattern match at Main (line 68, column 5 - line 72, column 71): " + [elem1.constructor.name]);
+  throw new Error("Failed pattern match at Main (line 79, column 5 - line 83, column 71): " + [elem1.constructor.name]);
 };
 export {
   answers,
