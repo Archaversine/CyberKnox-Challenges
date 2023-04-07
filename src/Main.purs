@@ -69,9 +69,9 @@ main = do
     win <- window
     doc <- document win
 
-    elem <- getElementById "submit-button" $ toNonElementParentNode $ toDocument doc
+    buttonElem <- getElementById "submit-button" $ toNonElementParentNode $ toDocument doc
 
-    case elem of 
+    case buttonElem of 
         Nothing -> Console.log $ "Could not find button!"
         Just button -> do 
            listener <- eventListener onButtonPress
