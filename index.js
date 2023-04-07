@@ -71,10 +71,10 @@ var apply = function(dict) {
 };
 var applySecond = function(dictApply) {
   var apply1 = apply(dictApply);
-  var map5 = map(dictApply.Functor0());
+  var map6 = map(dictApply.Functor0());
   return function(a) {
     return function(b) {
-      return apply1(map5($$const(identity2))(a))(b);
+      return apply1(map6($$const(identity2))(a))(b);
     };
   };
 };
@@ -96,6 +96,9 @@ var liftA1 = function(dictApplicative) {
 // output/Control.Bind/index.js
 var bind = function(dict) {
   return dict.bind;
+};
+var bindFlipped = function(dictBind) {
+  return flip(bind(dictBind));
 };
 
 // output/Control.Promise/foreign.js
@@ -175,6 +178,54 @@ var maybe = function(v) {
   };
 };
 var isJust = /* @__PURE__ */ maybe(false)(/* @__PURE__ */ $$const(true));
+var functorMaybe = {
+  map: function(v) {
+    return function(v1) {
+      if (v1 instanceof Just) {
+        return new Just(v(v1.value0));
+      }
+      ;
+      return Nothing.value;
+    };
+  }
+};
+var map2 = /* @__PURE__ */ map(functorMaybe);
+var applyMaybe = {
+  apply: function(v) {
+    return function(v1) {
+      if (v instanceof Just) {
+        return map2(v.value0)(v1);
+      }
+      ;
+      if (v instanceof Nothing) {
+        return Nothing.value;
+      }
+      ;
+      throw new Error("Failed pattern match at Data.Maybe (line 67, column 1 - line 69, column 30): " + [v.constructor.name, v1.constructor.name]);
+    };
+  },
+  Functor0: function() {
+    return functorMaybe;
+  }
+};
+var bindMaybe = {
+  bind: function(v) {
+    return function(v1) {
+      if (v instanceof Just) {
+        return v1(v.value0);
+      }
+      ;
+      if (v instanceof Nothing) {
+        return Nothing.value;
+      }
+      ;
+      throw new Error("Failed pattern match at Data.Maybe (line 125, column 1 - line 127, column 28): " + [v.constructor.name, v1.constructor.name]);
+    };
+  },
+  Apply0: function() {
+    return applyMaybe;
+  }
+};
 
 // output/Data.Either/index.js
 var Left = /* @__PURE__ */ function() {
@@ -245,12 +296,12 @@ var bindE = function(a) {
 // output/Control.Monad/index.js
 var ap = function(dictMonad) {
   var bind3 = bind(dictMonad.Bind1());
-  var pure3 = pure(dictMonad.Applicative0());
+  var pure4 = pure(dictMonad.Applicative0());
   return function(f) {
     return function(a) {
       return bind3(f)(function(f$prime) {
         return bind3(a)(function(a$prime) {
-          return pure3(f$prime(a$prime));
+          return pure4(f$prime(a$prime));
         });
       });
     };
@@ -311,6 +362,7 @@ var $lazy_applyEffect = /* @__PURE__ */ $runtime_lazy("applyEffect", "Effect", f
   };
 });
 var functorEffect = /* @__PURE__ */ $lazy_functorEffect(20);
+var applyEffect = /* @__PURE__ */ $lazy_applyEffect(23);
 
 // output/Effect.Exception/foreign.js
 function error(msg) {
@@ -330,11 +382,11 @@ var catchError = function(dict) {
 var $$try = function(dictMonadError) {
   var catchError1 = catchError(dictMonadError);
   var Monad0 = dictMonadError.MonadThrow0().Monad0();
-  var map5 = map(Monad0.Bind1().Apply0().Functor0());
-  var pure3 = pure(Monad0.Applicative0());
+  var map6 = map(Monad0.Bind1().Apply0().Functor0());
+  var pure4 = pure(Monad0.Applicative0());
   return function(a) {
-    return catchError1(map5(Right.create)(a))(function($52) {
-      return pure3(Left.create($52));
+    return catchError1(map6(Right.create)(a))(function($52) {
+      return pure4(Left.create($52));
     });
   };
 };
@@ -391,7 +443,7 @@ var liftEffect = function(dict) {
 };
 
 // output/Control.Monad.Except.Trans/index.js
-var map2 = /* @__PURE__ */ map(functorEither);
+var map3 = /* @__PURE__ */ map(functorEither);
 var ExceptT = function(x) {
   return x;
 };
@@ -407,7 +459,7 @@ var functorExceptT = function(dictFunctor) {
   var map1 = map(dictFunctor);
   return {
     map: function(f) {
-      return mapExceptT(map1(map2(f)));
+      return mapExceptT(map1(map3(f)));
     }
   };
 };
@@ -423,12 +475,12 @@ var monadExceptT = function(dictMonad) {
 };
 var bindExceptT = function(dictMonad) {
   var bind3 = bind(dictMonad.Bind1());
-  var pure3 = pure(dictMonad.Applicative0());
+  var pure4 = pure(dictMonad.Applicative0());
   return {
     bind: function(v) {
       return function(k) {
         return bind3(v)(either(function($187) {
-          return pure3(Left.create($187));
+          return pure4(Left.create($187));
         })(function(a) {
           var v1 = k(a);
           return v1;
@@ -481,24 +533,24 @@ var altExceptT = function(dictSemigroup) {
   return function(dictMonad) {
     var Bind1 = dictMonad.Bind1();
     var bind3 = bind(Bind1);
-    var pure3 = pure(dictMonad.Applicative0());
+    var pure4 = pure(dictMonad.Applicative0());
     var functorExceptT1 = functorExceptT(Bind1.Apply0().Functor0());
     return {
       alt: function(v) {
         return function(v1) {
           return bind3(v)(function(rm) {
             if (rm instanceof Right) {
-              return pure3(new Right(rm.value0));
+              return pure4(new Right(rm.value0));
             }
             ;
             if (rm instanceof Left) {
               return bind3(v1)(function(rn) {
                 if (rn instanceof Right) {
-                  return pure3(new Right(rn.value0));
+                  return pure4(new Right(rn.value0));
                 }
                 ;
                 if (rn instanceof Left) {
-                  return pure3(new Left(append2(rm.value0)(rn.value0)));
+                  return pure4(new Left(append2(rm.value0)(rn.value0)));
                 }
                 ;
                 throw new Error("Failed pattern match at Control.Monad.Except.Trans (line 86, column 9 - line 88, column 49): " + [rn.constructor.name]);
@@ -575,13 +627,13 @@ var foldr = function(dict) {
 };
 var traverse_ = function(dictApplicative) {
   var applySecond3 = applySecond(dictApplicative.Apply0());
-  var pure3 = pure(dictApplicative);
+  var pure4 = pure(dictApplicative);
   return function(dictFoldable) {
     var foldr22 = foldr(dictFoldable);
     return function(f) {
       return foldr22(function($454) {
         return applySecond3(f($454));
-      })(pure3(unit));
+      })(pure4(unit));
     };
   };
 };
@@ -633,23 +685,23 @@ var traverseArrayImpl = function() {
     };
   }
   return function(apply2) {
-    return function(map5) {
-      return function(pure3) {
+    return function(map6) {
+      return function(pure4) {
         return function(f) {
           return function(array) {
             function go2(bot, top2) {
               switch (top2 - bot) {
                 case 0:
-                  return pure3([]);
+                  return pure4([]);
                 case 1:
-                  return map5(array1)(f(array[bot]));
+                  return map6(array1)(f(array[bot]));
                 case 2:
-                  return apply2(map5(array2)(f(array[bot])))(f(array[bot + 1]));
+                  return apply2(map6(array2)(f(array[bot])))(f(array[bot + 1]));
                 case 3:
-                  return apply2(apply2(map5(array3)(f(array[bot])))(f(array[bot + 1])))(f(array[bot + 2]));
+                  return apply2(apply2(map6(array3)(f(array[bot])))(f(array[bot + 1])))(f(array[bot + 2]));
                 default:
                   var pivot = bot + Math.floor((top2 - bot) / 4) * 2;
-                  return apply2(map5(concat2)(go2(bot, pivot)))(go2(pivot, top2));
+                  return apply2(map6(concat2)(go2(bot, pivot)))(go2(pivot, top2));
               }
             }
             return go2(0, array.length);
@@ -2071,7 +2123,7 @@ var mempty2 = /* @__PURE__ */ mempty(monoidCanceler);
 var identity4 = /* @__PURE__ */ identity(categoryFn);
 var alt2 = /* @__PURE__ */ alt(/* @__PURE__ */ altExceptT(semigroupNonEmptyList)(monadIdentity));
 var unsafeReadTagged2 = /* @__PURE__ */ unsafeReadTagged(monadIdentity);
-var map3 = /* @__PURE__ */ map(/* @__PURE__ */ functorExceptT(functorIdentity));
+var map4 = /* @__PURE__ */ map(/* @__PURE__ */ functorExceptT(functorIdentity));
 var readString2 = /* @__PURE__ */ readString(monadIdentity);
 var toAff$prime = function(customCoerce) {
   return function(p) {
@@ -2087,7 +2139,7 @@ var toAff$prime = function(customCoerce) {
 var coerce3 = function(fn) {
   return either(function(v) {
     return error("Promise failed, couldn't extract JS Error or String");
-  })(identity4)(runExcept(alt2(unsafeReadTagged2("Error")(fn))(map3(error)(readString2(fn)))));
+  })(identity4)(runExcept(alt2(unsafeReadTagged2("Error")(fn))(map4(error)(readString2(fn)))));
 };
 var toAff = /* @__PURE__ */ toAff$prime(coerce3);
 
@@ -2289,6 +2341,18 @@ var log3 = function(dictMonadEffect) {
   };
 };
 
+// output/Effect.Timer/foreign.js
+function setTimeoutImpl(ms) {
+  return function(fn) {
+    return function() {
+      return setTimeout(fn, ms);
+    };
+  };
+}
+
+// output/Effect.Timer/index.js
+var setTimeout2 = setTimeoutImpl;
+
 // output/Web.DOM.Document/foreign.js
 var getEffProp = function(name15) {
   return function(doc) {
@@ -2391,9 +2455,9 @@ function _getElementById(id2) {
 }
 
 // output/Web.DOM.NonElementParentNode/index.js
-var map4 = /* @__PURE__ */ map(functorEffect);
+var map5 = /* @__PURE__ */ map(functorEffect);
 var getElementById = function(eid) {
-  var $2 = map4(toMaybe);
+  var $2 = map5(toMaybe);
   var $3 = _getElementById(eid);
   return function($4) {
     return $2($3($4));
@@ -2454,6 +2518,9 @@ var log4 = /* @__PURE__ */ log3(monadEffectAff);
 var elem3 = /* @__PURE__ */ elem2(eqString);
 var applySecond2 = /* @__PURE__ */ applySecond(applyAff);
 var liftEffect2 = /* @__PURE__ */ liftEffect(monadEffectAff);
+var applySecond1 = /* @__PURE__ */ applySecond(applyEffect);
+var pure3 = /* @__PURE__ */ pure(applicativeEffect);
+var bindFlipped2 = /* @__PURE__ */ bindFlipped(bindMaybe);
 var printHash = function(text5) {
   return bind2(attempt(toAff(getHash(text5))))(function(msg) {
     if (msg instanceof Left) {
@@ -2468,7 +2535,7 @@ var printHash = function(text5) {
   });
 };
 var answers = ["58f998155cbd12c2e3812f47f3bd4bf44b571c10048416fa9277abd5d183c4", "38d4467b57ef9c6c4fb296111635f657be938c1aa9c99ad77f34df789eba36", "1220157f50d86c46f2c1cf380b8957922b41fcd4d80c6be6a4df517c2cbdeda", "1e23ecd6ed7ce722c52e235e790377c93c729e82d9e533395e98f80b8b93d15", "5642f1b7dff894ce51e7b55dd31e61c101f7bc84eb515d28c6f36828b451ff2"];
-var verifyHash = function(element) {
+var verifyHash = function(asciiElem) {
   return function(text5) {
     return bind2(attempt(toAff(getHash(text5))))(function(hash2) {
       if (hash2 instanceof Left) {
@@ -2487,7 +2554,7 @@ var verifyHash = function(element) {
           ;
           throw new Error("Failed pattern match at Main (line 48, column 19 - line 50, column 46): " + []);
         }();
-        return applySecond2(liftEffect2(setClassName(className2)(element)))(log4("hash: " + hash2.value0));
+        return applySecond2(liftEffect2(setClassName(className2)(asciiElem)))(liftEffect2(applySecond1(setTimeout2(1e3)(setClassName("")(asciiElem)))(pure3(unit))));
       }
       ;
       throw new Error("Failed pattern match at Main (line 45, column 5 - line 50, column 46): " + [hash2.constructor.name]);
@@ -2500,27 +2567,17 @@ var onButtonPress = function(v) {
     var doc = document(win)();
     var asciiElem = getElementById("ascii-logo")(toNonElementParentNode(toDocument(doc)))();
     var textElem = getElementById("submit-input")(toNonElementParentNode(toDocument(doc)))();
-    var textHTMLElement = function() {
-      if (textElem instanceof Nothing) {
-        return Nothing.value;
-      }
-      ;
-      if (textElem instanceof Just) {
-        return fromElement(textElem.value0);
-      }
-      ;
-      throw new Error("Failed pattern match at Main (line 60, column 27 - line 62, column 47): " + [textElem.constructor.name]);
-    }();
     var text5 = function() {
-      if (textHTMLElement instanceof Nothing) {
+      var v1 = bindFlipped2(fromElement)(textElem);
+      if (v1 instanceof Nothing) {
         return "notext";
       }
       ;
-      if (textHTMLElement instanceof Just) {
-        return value3(textHTMLElement.value0)();
+      if (v1 instanceof Just) {
+        return value3(v1.value0)();
       }
       ;
-      throw new Error("Failed pattern match at Main (line 64, column 13 - line 66, column 26): " + [textHTMLElement.constructor.name]);
+      throw new Error("Failed pattern match at Main (line 60, column 13 - line 62, column 26): " + [v1.constructor.name]);
     }();
     if (asciiElem instanceof Nothing) {
       return log2("Could not find ascii logo!")();
@@ -2530,23 +2587,23 @@ var onButtonPress = function(v) {
       return launchAff_(verifyHash(asciiElem.value0)(text5))();
     }
     ;
-    throw new Error("Failed pattern match at Main (line 68, column 5 - line 70, column 55): " + [asciiElem.constructor.name]);
+    throw new Error("Failed pattern match at Main (line 64, column 5 - line 66, column 55): " + [asciiElem.constructor.name]);
   };
 };
 var main = function __do() {
   var win = windowImpl();
   var doc = document(win)();
-  var elem1 = getElementById("submit-button")(toNonElementParentNode(toDocument(doc)))();
-  if (elem1 instanceof Nothing) {
+  var buttonElem = getElementById("submit-button")(toNonElementParentNode(toDocument(doc)))();
+  if (buttonElem instanceof Nothing) {
     return log2("Could not find button!")();
   }
   ;
-  if (elem1 instanceof Just) {
+  if (buttonElem instanceof Just) {
     var listener = eventListener(onButtonPress)();
-    return addEventListener(click2)(listener)(true)(toEventTarget(elem1.value0))();
+    return addEventListener(click2)(listener)(true)(toEventTarget(buttonElem.value0))();
   }
   ;
-  throw new Error("Failed pattern match at Main (line 79, column 5 - line 83, column 71): " + [elem1.constructor.name]);
+  throw new Error("Failed pattern match at Main (line 75, column 5 - line 79, column 71): " + [buttonElem.constructor.name]);
 };
 export {
   answers,

@@ -18,6 +18,7 @@ to generate this file without the comments in this block.
   , "console"
   , "effect"
   , "either"
+  , "js-timers"
   , "maybe"
   , "prelude"
   , "web-dom"

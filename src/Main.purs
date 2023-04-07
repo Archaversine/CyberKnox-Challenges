@@ -13,6 +13,7 @@ import Effect.Aff (Aff, attempt, message, launchAff_)
 import Effect.Class (liftEffect)
 import Effect.Class.Console as CConsole
 import Effect.Console as Console
+import Effect.Timer (setTimeout)
 
 import Web.DOM.Document (toNonElementParentNode)
 import Web.DOM.Element (Element, toEventTarget, setClassName)
@@ -38,12 +39,12 @@ printHash text = do
         Right m -> CConsole.log m
 
 verifyHash :: Element -> String -> Aff Unit
-verifyHash element text = do 
+verifyHash asciiElem text = do 
     hash <- attempt $ toAff $ getHash text
 
     case hash of 
         Left e -> CConsole.log $ "Error calculating hash: " <> message e
-        Right h -> (liftEffect $ setClassName className element)
+        Right h -> liftEffect (setClassName className asciiElem) *> liftEffect (setTimeout 1000 (setClassName "" asciiElem) *> pure unit)
             where className
                     | h `elem` answers = "correct"
                     | otherwise = "incorrect"
