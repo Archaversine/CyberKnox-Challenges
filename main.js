@@ -1,4 +1,4 @@
-import { main, test } from './index.js';
+import { main } from './index.js';
 
 main();
 //test();

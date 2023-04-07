@@ -5,10 +5,23 @@ import Prelude
 import Control.Promise (Promise, toAff)
 
 import Data.Either (Either(..))
+import Data.Maybe (Maybe(..))
 
 import Effect (Effect)
-import Effect.Aff (Aff, attempt, launchAff_, message)
+import Effect.Aff (Aff, attempt, message)
 import Effect.Class.Console as CConsole
+import Effect.Console as Console
+
+import Web.DOM.Document (toNonElementParentNode)
+import Web.DOM.Element (toEventTarget)
+import Web.DOM.NonElementParentNode (getElementById)
+
+import Web.Event.EventTarget (addEventListener, eventListener)
+
+import Web.HTML (window)
+import Web.HTML.Event.EventTypes (click)
+import Web.HTML.HTMLDocument (toDocument)
+import Web.HTML.Window (document)
 
 foreign import getHash :: String -> Promise String
 
@@ -21,7 +34,19 @@ printHash text = do
         Right m -> CConsole.log m
 
 main :: Effect Unit
-main = launchAff_ $ printHash "INSERT FLAG HERE"
+main = do 
+    win <- window
+    doc <- document win
+
+    elem <- getElementById "submit-button" $ toNonElementParentNode $ toDocument doc
+
+    case elem of 
+        Nothing -> Console.log $ "Could not find button!"
+        Just button -> do 
+           listener <- eventListener (\_ -> Console.log "button clicked")
+           addEventListener click listener true (toEventTarget button)
+    
+--main = launchAff_ $ printHash "INSERT FLAG HERE"
 
 answers :: Array String
 answers = [
