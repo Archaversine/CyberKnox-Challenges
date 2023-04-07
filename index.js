@@ -54,6 +54,9 @@ var unit = void 0;
 var map = function(dict) {
   return dict.map;
 };
+var $$void = function(dictFunctor) {
+  return map(dictFunctor)($$const(unit));
+};
 var voidRight = function(dictFunctor) {
   var map1 = map(dictFunctor);
   return function(x) {
@@ -122,6 +125,22 @@ var bottomChar = String.fromCharCode(0);
 var topNumber = Number.POSITIVE_INFINITY;
 var bottomNumber = Number.NEGATIVE_INFINITY;
 
+// output/Data.Eq/foreign.js
+var refEq = function(r1) {
+  return function(r2) {
+    return r1 === r2;
+  };
+};
+var eqStringImpl = refEq;
+
+// output/Data.Eq/index.js
+var eqString = {
+  eq: eqStringImpl
+};
+var eq = function(dict) {
+  return dict.eq;
+};
+
 // output/Data.Maybe/index.js
 var Nothing = /* @__PURE__ */ function() {
   function Nothing2() {
@@ -140,6 +159,22 @@ var Just = /* @__PURE__ */ function() {
   };
   return Just2;
 }();
+var maybe = function(v) {
+  return function(v1) {
+    return function(v2) {
+      if (v2 instanceof Nothing) {
+        return v;
+      }
+      ;
+      if (v2 instanceof Just) {
+        return v1(v2.value0);
+      }
+      ;
+      throw new Error("Failed pattern match at Data.Maybe (line 237, column 1 - line 237, column 51): " + [v.constructor.name, v1.constructor.name, v2.constructor.name]);
+    };
+  };
+};
+var isJust = /* @__PURE__ */ maybe(false)(/* @__PURE__ */ $$const(true));
 
 // output/Data.Either/index.js
 var Left = /* @__PURE__ */ function() {
@@ -539,13 +574,13 @@ var foldr = function(dict) {
   return dict.foldr;
 };
 var traverse_ = function(dictApplicative) {
-  var applySecond2 = applySecond(dictApplicative.Apply0());
+  var applySecond3 = applySecond(dictApplicative.Apply0());
   var pure3 = pure(dictApplicative);
   return function(dictFoldable) {
     var foldr22 = foldr(dictFoldable);
     return function(f) {
       return foldr22(function($454) {
-        return applySecond2(f($454));
+        return applySecond3(f($454));
       })(pure3(unit));
     };
   };
@@ -1036,7 +1071,7 @@ var Aff = function() {
     var joinId = 0;
     var joins = null;
     var rethrow = true;
-    function run2(localRunTick) {
+    function run3(localRunTick) {
       var tmp, result, attempt2;
       while (true) {
         tmp = null;
@@ -1108,7 +1143,7 @@ var Aff = function() {
                       }
                       status = STEP_RESULT;
                       step2 = result2;
-                      run2(runTick);
+                      run3(runTick);
                     });
                   };
                 });
@@ -1291,7 +1326,7 @@ var Aff = function() {
             interrupt = util.left(error3);
             status = COMPLETED;
             step2 = interrupt;
-            run2(runTick);
+            run3(runTick);
             break;
           case PENDING:
             if (interrupt === null) {
@@ -1304,7 +1339,7 @@ var Aff = function() {
               status = RETURN;
               step2 = null;
               fail2 = null;
-              run2(++runTick);
+              run3(++runTick);
             }
             break;
           default:
@@ -1327,7 +1362,7 @@ var Aff = function() {
           handler: cb
         })();
         if (status === SUSPENDED) {
-          run2(runTick);
+          run3(runTick);
         }
         return canceler;
       };
@@ -1343,10 +1378,10 @@ var Aff = function() {
         if (status === SUSPENDED) {
           if (!Scheduler.isDraining()) {
             Scheduler.enqueue(function() {
-              run2(runTick);
+              run3(runTick);
             });
           } else {
-            run2(runTick);
+            run3(runTick);
           }
         }
       }
@@ -1532,7 +1567,7 @@ var Aff = function() {
         };
       };
     }
-    function run2() {
+    function run3() {
       var status = CONTINUE;
       var step2 = par;
       var head = null;
@@ -1636,7 +1671,7 @@ var Aff = function() {
         });
       };
     }
-    run2();
+    run3();
     return function(killError) {
       return new Aff2(ASYNC, function(killCb) {
         return function() {
@@ -1706,6 +1741,11 @@ function _parAffApply(aff1) {
   };
 }
 var makeAff = Aff.Async;
+function _makeFiber(util, aff) {
+  return function() {
+    return Aff.Fiber(util, null, aff);
+  };
+}
 var _delay = function() {
   function setDelay(n, k) {
     if (n === 0 && typeof setImmediate !== "undefined") {
@@ -1769,6 +1809,30 @@ var parSequence_ = function(dictParallel) {
   };
 };
 
+// output/Partial.Unsafe/foreign.js
+var _unsafePartial = function(f) {
+  return f();
+};
+
+// output/Partial/foreign.js
+var _crashWith = function(msg) {
+  throw new Error(msg);
+};
+
+// output/Partial/index.js
+var crashWith = function() {
+  return _crashWith;
+};
+
+// output/Partial.Unsafe/index.js
+var crashWith2 = /* @__PURE__ */ crashWith();
+var unsafePartial = _unsafePartial;
+var unsafeCrashWith = function(msg) {
+  return unsafePartial(function() {
+    return crashWith2(msg);
+  });
+};
+
 // output/Effect.Aff/index.js
 var $runtime_lazy2 = function(name15, moduleName, init2) {
   var state3 = 0;
@@ -1784,11 +1848,67 @@ var $runtime_lazy2 = function(name15, moduleName, init2) {
     return val;
   };
 };
+var $$void2 = /* @__PURE__ */ $$void(functorEffect);
 var functorParAff = {
   map: _parAffMap
 };
 var functorAff = {
   map: _map
+};
+var ffiUtil = /* @__PURE__ */ function() {
+  var unsafeFromRight = function(v) {
+    if (v instanceof Right) {
+      return v.value0;
+    }
+    ;
+    if (v instanceof Left) {
+      return unsafeCrashWith("unsafeFromRight: Left");
+    }
+    ;
+    throw new Error("Failed pattern match at Effect.Aff (line 412, column 21 - line 414, column 54): " + [v.constructor.name]);
+  };
+  var unsafeFromLeft = function(v) {
+    if (v instanceof Left) {
+      return v.value0;
+    }
+    ;
+    if (v instanceof Right) {
+      return unsafeCrashWith("unsafeFromLeft: Right");
+    }
+    ;
+    throw new Error("Failed pattern match at Effect.Aff (line 407, column 20 - line 409, column 55): " + [v.constructor.name]);
+  };
+  var isLeft = function(v) {
+    if (v instanceof Left) {
+      return true;
+    }
+    ;
+    if (v instanceof Right) {
+      return false;
+    }
+    ;
+    throw new Error("Failed pattern match at Effect.Aff (line 402, column 12 - line 404, column 21): " + [v.constructor.name]);
+  };
+  return {
+    isLeft,
+    fromLeft: unsafeFromLeft,
+    fromRight: unsafeFromRight,
+    left: Left.create,
+    right: Right.create
+  };
+}();
+var makeFiber = function(aff) {
+  return _makeFiber(ffiUtil, aff);
+};
+var launchAff = function(aff) {
+  return function __do2() {
+    var fiber = makeFiber(aff)();
+    fiber.run();
+    return fiber;
+  };
+};
+var launchAff_ = function($74) {
+  return $$void2(launchAff($74));
 };
 var applyParAff = {
   apply: _parAffApply,
@@ -1824,6 +1944,7 @@ var $lazy_applyAff = /* @__PURE__ */ $runtime_lazy2("applyAff", "Effect.Aff", fu
     }
   };
 });
+var applyAff = /* @__PURE__ */ $lazy_applyAff(73);
 var pure2 = /* @__PURE__ */ pure(applicativeAff);
 var monadEffectAff = {
   liftEffect: _liftEffect,
@@ -1970,6 +2091,189 @@ var coerce3 = function(fn) {
 };
 var toAff = /* @__PURE__ */ toAff$prime(coerce3);
 
+// output/Data.Array/foreign.js
+var replicateFill = function(count) {
+  return function(value12) {
+    if (count < 1) {
+      return [];
+    }
+    var result = new Array(count);
+    return result.fill(value12);
+  };
+};
+var replicatePolyfill = function(count) {
+  return function(value12) {
+    var result = [];
+    var n = 0;
+    for (var i = 0; i < count; i++) {
+      result[n++] = value12;
+    }
+    return result;
+  };
+};
+var replicate = typeof Array.prototype.fill === "function" ? replicateFill : replicatePolyfill;
+var fromFoldableImpl = function() {
+  function Cons2(head, tail) {
+    this.head = head;
+    this.tail = tail;
+  }
+  var emptyList = {};
+  function curryCons(head) {
+    return function(tail) {
+      return new Cons2(head, tail);
+    };
+  }
+  function listToArray(list) {
+    var result = [];
+    var count = 0;
+    var xs = list;
+    while (xs !== emptyList) {
+      result[count++] = xs.head;
+      xs = xs.tail;
+    }
+    return result;
+  }
+  return function(foldr3) {
+    return function(xs) {
+      return listToArray(foldr3(curryCons)(emptyList)(xs));
+    };
+  };
+}();
+var findIndexImpl = function(just) {
+  return function(nothing) {
+    return function(f) {
+      return function(xs) {
+        for (var i = 0, l = xs.length; i < l; i++) {
+          if (f(xs[i]))
+            return just(i);
+        }
+        return nothing;
+      };
+    };
+  };
+};
+var sortByImpl = function() {
+  function mergeFromTo(compare2, fromOrdering, xs1, xs2, from2, to) {
+    var mid;
+    var i;
+    var j;
+    var k;
+    var x;
+    var y;
+    var c;
+    mid = from2 + (to - from2 >> 1);
+    if (mid - from2 > 1)
+      mergeFromTo(compare2, fromOrdering, xs2, xs1, from2, mid);
+    if (to - mid > 1)
+      mergeFromTo(compare2, fromOrdering, xs2, xs1, mid, to);
+    i = from2;
+    j = mid;
+    k = from2;
+    while (i < mid && j < to) {
+      x = xs2[i];
+      y = xs2[j];
+      c = fromOrdering(compare2(x)(y));
+      if (c > 0) {
+        xs1[k++] = y;
+        ++j;
+      } else {
+        xs1[k++] = x;
+        ++i;
+      }
+    }
+    while (i < mid) {
+      xs1[k++] = xs2[i++];
+    }
+    while (j < to) {
+      xs1[k++] = xs2[j++];
+    }
+  }
+  return function(compare2) {
+    return function(fromOrdering) {
+      return function(xs) {
+        var out;
+        if (xs.length < 2)
+          return xs;
+        out = xs.slice(0);
+        mergeFromTo(compare2, fromOrdering, out, xs.slice(0), 0, xs.length);
+        return out;
+      };
+    };
+  };
+}();
+
+// output/Data.Array.ST/foreign.js
+var sortByImpl2 = function() {
+  function mergeFromTo(compare2, fromOrdering, xs1, xs2, from2, to) {
+    var mid;
+    var i;
+    var j;
+    var k;
+    var x;
+    var y;
+    var c;
+    mid = from2 + (to - from2 >> 1);
+    if (mid - from2 > 1)
+      mergeFromTo(compare2, fromOrdering, xs2, xs1, from2, mid);
+    if (to - mid > 1)
+      mergeFromTo(compare2, fromOrdering, xs2, xs1, mid, to);
+    i = from2;
+    j = mid;
+    k = from2;
+    while (i < mid && j < to) {
+      x = xs2[i];
+      y = xs2[j];
+      c = fromOrdering(compare2(x)(y));
+      if (c > 0) {
+        xs1[k++] = y;
+        ++j;
+      } else {
+        xs1[k++] = x;
+        ++i;
+      }
+    }
+    while (i < mid) {
+      xs1[k++] = xs2[i++];
+    }
+    while (j < to) {
+      xs1[k++] = xs2[j++];
+    }
+  }
+  return function(compare2) {
+    return function(fromOrdering) {
+      return function(xs) {
+        return function() {
+          if (xs.length < 2)
+            return xs;
+          mergeFromTo(compare2, fromOrdering, xs, xs.slice(0), 0, xs.length);
+          return xs;
+        };
+      };
+    };
+  };
+}();
+
+// output/Data.Array/index.js
+var findIndex2 = /* @__PURE__ */ function() {
+  return findIndexImpl(Just.create)(Nothing.value);
+}();
+var elemIndex = function(dictEq) {
+  var eq2 = eq(dictEq);
+  return function(x) {
+    return findIndex2(function(v) {
+      return eq2(v)(x);
+    });
+  };
+};
+var elem2 = function(dictEq) {
+  var elemIndex1 = elemIndex(dictEq);
+  return function(a) {
+    return function(arr) {
+      return isJust(elemIndex1(a)(arr));
+    };
+  };
+};
+
 // output/Effect.Console/foreign.js
 var log2 = function(s) {
   return function() {
@@ -2024,6 +2328,13 @@ var _namespaceURI = getProp("namespaceURI");
 var _prefix = getProp("prefix");
 var localName = getProp("localName");
 var tagName = getProp("tagName");
+function setClassName(className2) {
+  return function(node) {
+    return function() {
+      node.className = className2;
+    };
+  };
+}
 
 // output/Web.DOM.ParentNode/foreign.js
 var getEffProp2 = function(name15) {
@@ -2101,6 +2412,9 @@ var click2 = "click";
 // output/Main/index.js
 var bind2 = /* @__PURE__ */ bind(bindAff);
 var log4 = /* @__PURE__ */ log3(monadEffectAff);
+var elem3 = /* @__PURE__ */ elem2(eqString);
+var applySecond2 = /* @__PURE__ */ applySecond(applyAff);
+var liftEffect2 = /* @__PURE__ */ liftEffect(monadEffectAff);
 var printHash = function(text5) {
   return bind2(attempt(toAff(getHash(text5))))(function(msg) {
     if (msg instanceof Left) {
@@ -2111,30 +2425,72 @@ var printHash = function(text5) {
       return log4(msg.value0);
     }
     ;
-    throw new Error("Failed pattern match at Main (line 27, column 5 - line 29, column 34): " + [msg.constructor.name]);
+    throw new Error("Failed pattern match at Main (line 35, column 5 - line 37, column 34): " + [msg.constructor.name]);
   });
+};
+var answers = ["58f998155cbd12c2e3812f47f3bd4bf44b571c10048416fa9277abd5d183c4", "38d4467b57ef9c6c4fb296111635f657be938c1aa9c99ad77f34df789eba36", "1220157f50d86c46f2c1cf380b8957922b41fcd4d80c6be6a4df517c2cbdeda", "1e23ecd6ed7ce722c52e235e790377c93c729e82d9e533395e98f80b8b93d15", "5642f1b7dff894ce51e7b55dd31e61c101f7bc84eb515d28c6f36828b451ff2"];
+var verifyHash = function(element) {
+  return function(text5) {
+    return bind2(attempt(toAff(getHash(text5))))(function(hash2) {
+      if (hash2 instanceof Left) {
+        return log4("Error calculating hash: " + message(hash2.value0));
+      }
+      ;
+      if (hash2 instanceof Right) {
+        var className2 = function() {
+          if (elem3(hash2.value0)(answers)) {
+            return "correct";
+          }
+          ;
+          if (otherwise) {
+            return "incorrect";
+          }
+          ;
+          throw new Error("Failed pattern match at Main (line 46, column 19 - line 48, column 46): " + []);
+        }();
+        return applySecond2(liftEffect2(setClassName(className2)(element)))(log4("hash: " + hash2.value0));
+      }
+      ;
+      throw new Error("Failed pattern match at Main (line 43, column 5 - line 48, column 46): " + [hash2.constructor.name]);
+    });
+  };
+};
+var onButtonPress = function(v) {
+  return function __do2() {
+    var win = windowImpl();
+    var doc = document(win)();
+    var asciiElem = getElementById("ascii-logo")(toNonElementParentNode(toDocument(doc)))();
+    if (asciiElem instanceof Nothing) {
+      return log2("Could not find ascii logo!")();
+    }
+    ;
+    if (asciiElem instanceof Just) {
+      return launchAff_(verifyHash(asciiElem.value0)("cyberknox{Hello_world}"))();
+    }
+    ;
+    throw new Error("Failed pattern match at Main (line 57, column 5 - line 59, column 75): " + [asciiElem.constructor.name]);
+  };
 };
 var main = function __do() {
   var win = windowImpl();
   var doc = document(win)();
-  var elem2 = getElementById("submit-button")(toNonElementParentNode(toDocument(doc)))();
-  if (elem2 instanceof Nothing) {
+  var elem1 = getElementById("submit-button")(toNonElementParentNode(toDocument(doc)))();
+  if (elem1 instanceof Nothing) {
     return log2("Could not find button!")();
   }
   ;
-  if (elem2 instanceof Just) {
-    var listener = eventListener(function(v) {
-      return log2("button clicked");
-    })();
-    return addEventListener(click2)(listener)(true)(toEventTarget(elem2.value0))();
+  if (elem1 instanceof Just) {
+    var listener = eventListener(onButtonPress)();
+    return addEventListener(click2)(listener)(true)(toEventTarget(elem1.value0))();
   }
   ;
-  throw new Error("Failed pattern match at Main (line 38, column 5 - line 42, column 71): " + [elem2.constructor.name]);
+  throw new Error("Failed pattern match at Main (line 68, column 5 - line 72, column 71): " + [elem1.constructor.name]);
 };
-var answers = ["58f998155cbd12c2e3812f47f3bd4bf44b571c100048416fa9277abd5d0183c4", "38d4467b57ef9c6c4fb2960111635f657be9038c1aa9c99ad77f34df789eba36", "1220157f50d806c46f2c1cf380b8957922b41fcd4d80c6be6a4df517c2cbdeda", "1e23ecd6ed7ce7022c52e235e790377c93c729e82d9e533395e98f80b8b93d15", "5642f1b7dff8094ce51e7b55dd31e61c101f7bc84eb515d28c6f36828b451ff2"];
 export {
   answers,
   getHash,
   main,
-  printHash
+  onButtonPress,
+  printHash,
+  verifyHash
 };
