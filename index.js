@@ -71,10 +71,10 @@ var apply = function(dict) {
 };
 var applySecond = function(dictApply) {
   var apply1 = apply(dictApply);
-  var map6 = map(dictApply.Functor0());
+  var map7 = map(dictApply.Functor0());
   return function(a) {
     return function(b) {
-      return apply1(map6($$const(identity2))(a))(b);
+      return apply1(map7($$const(identity2))(a))(b);
     };
   };
 };
@@ -84,11 +84,11 @@ var pure = function(dict) {
   return dict.pure;
 };
 var liftA1 = function(dictApplicative) {
-  var apply2 = apply(dictApplicative.Apply0());
-  var pure1 = pure(dictApplicative);
+  var apply3 = apply(dictApplicative.Apply0());
+  var pure12 = pure(dictApplicative);
   return function(f) {
     return function(a) {
-      return apply2(pure1(f))(a);
+      return apply3(pure12(f))(a);
     };
   };
 };
@@ -226,6 +226,14 @@ var bindMaybe = {
     return applyMaybe;
   }
 };
+var applicativeMaybe = /* @__PURE__ */ function() {
+  return {
+    pure: Just.create,
+    Apply0: function() {
+      return applyMaybe;
+    }
+  };
+}();
 
 // output/Data.Either/index.js
 var Left = /* @__PURE__ */ function() {
@@ -382,10 +390,10 @@ var catchError = function(dict) {
 var $$try = function(dictMonadError) {
   var catchError1 = catchError(dictMonadError);
   var Monad0 = dictMonadError.MonadThrow0().Monad0();
-  var map6 = map(Monad0.Bind1().Apply0().Functor0());
+  var map7 = map(Monad0.Bind1().Apply0().Functor0());
   var pure4 = pure(Monad0.Applicative0());
   return function(a) {
-    return catchError1(map6(Right.create)(a))(function($52) {
+    return catchError1(map7(Right.create)(a))(function($52) {
       return pure4(Left.create($52));
     });
   };
@@ -684,8 +692,8 @@ var traverseArrayImpl = function() {
       return xs.concat(ys);
     };
   }
-  return function(apply2) {
-    return function(map6) {
+  return function(apply3) {
+    return function(map7) {
       return function(pure4) {
         return function(f) {
           return function(array) {
@@ -694,14 +702,14 @@ var traverseArrayImpl = function() {
                 case 0:
                   return pure4([]);
                 case 1:
-                  return map6(array1)(f(array[bot]));
+                  return map7(array1)(f(array[bot]));
                 case 2:
-                  return apply2(map6(array2)(f(array[bot])))(f(array[bot + 1]));
+                  return apply3(map7(array2)(f(array[bot])))(f(array[bot + 1]));
                 case 3:
-                  return apply2(apply2(map6(array3)(f(array[bot])))(f(array[bot + 1])))(f(array[bot + 2]));
+                  return apply3(apply3(map7(array3)(f(array[bot])))(f(array[bot + 1])))(f(array[bot + 2]));
                 default:
                   var pivot = bot + Math.floor((top2 - bot) / 4) * 2;
-                  return apply2(map6(concat2)(go2(bot, pivot)))(go2(pivot, top2));
+                  return apply3(map7(concat2)(go2(bot, pivot)))(go2(pivot, top2));
               }
             }
             return go2(0, array.length);
@@ -2097,12 +2105,12 @@ var fail = function(dictMonad) {
   };
 };
 var unsafeReadTagged = function(dictMonad) {
-  var pure1 = pure(applicativeExceptT(dictMonad));
+  var pure12 = pure(applicativeExceptT(dictMonad));
   var fail1 = fail(dictMonad);
   return function(tag) {
     return function(value12) {
       if (tagOf(value12) === tag) {
-        return pure1(unsafeFromForeign(value12));
+        return pure12(unsafeFromForeign(value12));
       }
       ;
       if (otherwise) {
@@ -2443,7 +2451,35 @@ var _lastElementChild = getEffProp2("lastElementChild");
 var childElementCount = getEffProp2("childElementCount");
 
 // output/Web.DOM.Element/index.js
+var toNode = unsafeCoerce2;
 var toEventTarget = unsafeCoerce2;
+
+// output/Web.DOM.Node/foreign.js
+var getEffProp3 = function(name15) {
+  return function(node) {
+    return function() {
+      return node[name15];
+    };
+  };
+};
+var baseURI = getEffProp3("baseURI");
+var _ownerDocument = getEffProp3("ownerDocument");
+var _parentNode = getEffProp3("parentNode");
+var _parentElement = getEffProp3("parentElement");
+var childNodes = getEffProp3("childNodes");
+var _firstChild = getEffProp3("firstChild");
+var _lastChild = getEffProp3("lastChild");
+var _previousSibling = getEffProp3("previousSibling");
+var _nextSibling = getEffProp3("nextSibling");
+var _nodeValue = getEffProp3("nodeValue");
+var textContent = getEffProp3("textContent");
+function setTextContent(value12) {
+  return function(node) {
+    return function() {
+      node.textContent = value12;
+    };
+  };
+}
 
 // output/Web.DOM.NonElementParentNode/foreign.js
 function _getElementById(id2) {
@@ -2512,6 +2548,14 @@ function document(window2) {
 // output/Web.HTML.Event.EventTypes/index.js
 var click2 = "click";
 
+// output/Web.UIEvent.KeyboardEvent/foreign.js
+function key(e) {
+  return e.key;
+}
+
+// output/Web.UIEvent.KeyboardEvent/index.js
+var fromEvent = /* @__PURE__ */ unsafeReadProtoTagged("KeyboardEvent");
+
 // output/Main/index.js
 var bind2 = /* @__PURE__ */ bind(bindAff);
 var log4 = /* @__PURE__ */ log3(monadEffectAff);
@@ -2521,31 +2565,49 @@ var liftEffect2 = /* @__PURE__ */ liftEffect(monadEffectAff);
 var applySecond1 = /* @__PURE__ */ applySecond(applyEffect);
 var pure3 = /* @__PURE__ */ pure(applicativeEffect);
 var bindFlipped2 = /* @__PURE__ */ bindFlipped(bindMaybe);
-var answers = ["58f998155cbd12c2e3812f47f3bd4bf44b571c10048416fa9277abd5d183c4", "38d4467b57ef9c6c4fb296111635f657be938c1aa9c99ad77f34df789eba36", "1220157f50d86c46f2c1cf380b8957922b41fcd4d80c6be6a4df517c2cbdeda", "1e23ecd6ed7ce722c52e235e790377c93c729e82d9e533395e98f80b8b93d15", "5642f1b7dff894ce51e7b55dd31e61c101f7bc84eb515d28c6f36828b451ff2"];
+var apply2 = /* @__PURE__ */ apply(applyMaybe);
+var map6 = /* @__PURE__ */ map(functorMaybe);
+var pure1 = /* @__PURE__ */ pure(applicativeMaybe);
+var answers = ["58f998155cbd12c2e3812f47f3bd4bf44b571c10048416fa9277abd5d183c4", "38d4467b57ef9c6c4fb296111635f657be938c1aa9c99ad77f34df789eba36", "1220157f50d86c46f2c1cf380b8957922b41fcd4d80c6be6a4df517c2cbdeda", "1e23ecd6ed7ce722c52e235e790377c93c729e82d9e533395e98f80b8b93d15", "5642f1b7dff894ce51e7b55dd31e61c101f7bc84eb515d28c6f36828b451ff2", "444329bb3220eac4fdb6f68ca3fbbba07d8ac4d9badc5a20b8fa7749fff33750"];
 var verifyHash = function(asciiElem) {
-  return function(text5) {
-    return bind2(attempt(toAff(getHash(text5))))(function(hash2) {
-      if (hash2 instanceof Left) {
-        return log4("Error calculating hash: " + message(hash2.value0));
-      }
-      ;
-      if (hash2 instanceof Right) {
-        var className2 = function() {
-          if (elem3(hash2.value0)(answers)) {
-            return "correct";
-          }
-          ;
-          if (otherwise) {
-            return "incorrect";
-          }
-          ;
-          throw new Error("Failed pattern match at Main (line 40, column 19 - line 42, column 46): " + []);
-        }();
-        return applySecond2(liftEffect2(setClassName(className2)(asciiElem)))(liftEffect2(applySecond1(setTimeout2(1e3)(setClassName("")(asciiElem)))(pure3(unit))));
-      }
-      ;
-      throw new Error("Failed pattern match at Main (line 37, column 5 - line 42, column 46): " + [hash2.constructor.name]);
-    });
+  return function(resultElem) {
+    return function(text5) {
+      return bind2(attempt(toAff(getHash(text5))))(function(hash2) {
+        var resultLabel = toNode(resultElem);
+        if (hash2 instanceof Left) {
+          return log4("Error calculating hash: " + message(hash2.value0));
+        }
+        ;
+        if (hash2 instanceof Right) {
+          var isCorrect = elem3(hash2.value0)(answers);
+          var labelText = function() {
+            if (isCorrect) {
+              return "You got the flag!";
+            }
+            ;
+            if (otherwise) {
+              return "Couldn't find a matching flag.";
+            }
+            ;
+            throw new Error("Failed pattern match at Main (line 51, column 19 - line 53, column 67): " + []);
+          }();
+          var className2 = function() {
+            if (isCorrect) {
+              return "correct";
+            }
+            ;
+            if (otherwise) {
+              return "incorrect";
+            }
+            ;
+            throw new Error("Failed pattern match at Main (line 48, column 19 - line 50, column 46): " + []);
+          }();
+          return applySecond2(applySecond2(liftEffect2(setClassName(className2)(asciiElem)))(liftEffect2(setTextContent(labelText)(resultLabel))))(liftEffect2(applySecond1(setTimeout2(1e3)(applySecond1(setClassName("")(asciiElem))(setTextContent("Enter a flag!")(resultLabel))))(pure3(unit))));
+        }
+        ;
+        throw new Error("Failed pattern match at Main (line 42, column 5 - line 53, column 67): " + [hash2.constructor.name]);
+      });
+    };
   };
 };
 var onButtonPress = function(v) {
@@ -2554,48 +2616,81 @@ var onButtonPress = function(v) {
     var doc = document(win)();
     var asciiElem = getElementById("ascii-logo")(toNonElementParentNode(toDocument(doc)))();
     var textElem = getElementById("submit-input")(toNonElementParentNode(toDocument(doc)))();
+    var resultElem = getElementById("flag-results")(toNonElementParentNode(toDocument(doc)))();
     var text5 = function() {
-      var v1 = bindFlipped2(fromElement)(textElem);
-      if (v1 instanceof Nothing) {
+      var v12 = bindFlipped2(fromElement)(textElem);
+      if (v12 instanceof Nothing) {
         return "notext";
       }
       ;
-      if (v1 instanceof Just) {
-        return value3(v1.value0)();
+      if (v12 instanceof Just) {
+        return value3(v12.value0)();
       }
       ;
-      throw new Error("Failed pattern match at Main (line 52, column 13 - line 54, column 26): " + [v1.constructor.name]);
+      throw new Error("Failed pattern match at Main (line 64, column 13 - line 66, column 26): " + [v12.constructor.name]);
     }();
-    if (asciiElem instanceof Nothing) {
-      return log2("Could not find ascii logo!")();
+    var v1 = apply2(apply2(map6(verifyHash)(asciiElem))(resultElem))(pure1(text5));
+    if (v1 instanceof Nothing) {
+      return log2("Could not verify hash successfully.")();
     }
     ;
-    if (asciiElem instanceof Just) {
-      return launchAff_(verifyHash(asciiElem.value0)(text5))();
+    if (v1 instanceof Just) {
+      return launchAff_(v1.value0)();
     }
     ;
-    throw new Error("Failed pattern match at Main (line 56, column 5 - line 58, column 55): " + [asciiElem.constructor.name]);
+    throw new Error("Failed pattern match at Main (line 68, column 5 - line 70, column 31): " + [v1.constructor.name]);
   };
+};
+var onInputKeyPress = function(event) {
+  var v = fromEvent(event);
+  if (v instanceof Nothing) {
+    return log2("Error");
+  }
+  ;
+  if (v instanceof Just) {
+    var $28 = key(v.value0) === "Enter";
+    if ($28) {
+      return onButtonPress(event);
+    }
+    ;
+    return pure3(unit);
+  }
+  ;
+  throw new Error("Failed pattern match at Main (line 74, column 5 - line 76, column 81): " + [v.constructor.name]);
 };
 var main = function __do() {
   var win = windowImpl();
   var doc = document(win)();
   var buttonElem = getElementById("submit-button")(toNonElementParentNode(toDocument(doc)))();
-  if (buttonElem instanceof Nothing) {
-    return log2("Could not find button!")();
+  var inputElem = getElementById("submit-input")(toNonElementParentNode(toDocument(doc)))();
+  (function() {
+    if (buttonElem instanceof Nothing) {
+      return log2("Could not find button!")();
+    }
+    ;
+    if (buttonElem instanceof Just) {
+      var listener2 = eventListener(onButtonPress)();
+      return addEventListener(click2)(listener2)(true)(toEventTarget(buttonElem.value0))();
+    }
+    ;
+    throw new Error("Failed pattern match at Main (line 87, column 5 - line 91, column 78): " + [buttonElem.constructor.name]);
+  })();
+  if (inputElem instanceof Nothing) {
+    return log2("Could not find input!")();
   }
   ;
-  if (buttonElem instanceof Just) {
-    var listener = eventListener(onButtonPress)();
-    return addEventListener(click2)(listener)(true)(toEventTarget(buttonElem.value0))();
+  if (inputElem instanceof Just) {
+    var listener = eventListener(onInputKeyPress)();
+    return addEventListener("keypress")(listener)(true)(toEventTarget(inputElem.value0))();
   }
   ;
-  throw new Error("Failed pattern match at Main (line 67, column 5 - line 71, column 71): " + [buttonElem.constructor.name]);
+  throw new Error("Failed pattern match at Main (line 93, column 5 - line 97, column 90): " + [inputElem.constructor.name]);
 };
 export {
   answers,
   getHash,
   main,
   onButtonPress,
+  onInputKeyPress,
   verifyHash
 };
