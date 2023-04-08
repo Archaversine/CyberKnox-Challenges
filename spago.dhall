@@ -21,7 +21,6 @@ to generate this file without the comments in this block.
   , "js-timers"
   , "maybe"
   , "prelude"
-  , "transformers"
   , "web-dom"
   , "web-events"
   , "web-html"
