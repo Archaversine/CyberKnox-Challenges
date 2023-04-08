@@ -30,14 +30,6 @@ import Web.HTML.Window (document)
 
 foreign import getHash :: String -> Promise String
 
-printHash :: String -> Aff Unit
-printHash text = do 
-    msg <- attempt $ toAff $ getHash text
-
-    case msg of 
-        Left e -> CConsole.log $ "Something went wrong: " <> message e
-        Right m -> CConsole.log m
-
 verifyHash :: Element -> String -> Aff Unit
 verifyHash asciiElem text = do 
     hash <- attempt $ toAff $ getHash text
@@ -77,8 +69,6 @@ main = do
         Just button -> do 
            listener <- eventListener onButtonPress
            addEventListener click listener true (toEventTarget button)
-    
---main = launchAff_ $ printHash "INSERT FLAG HERE"
 
 answers :: Array String
 answers = [

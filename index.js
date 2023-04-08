@@ -2521,19 +2521,6 @@ var liftEffect2 = /* @__PURE__ */ liftEffect(monadEffectAff);
 var applySecond1 = /* @__PURE__ */ applySecond(applyEffect);
 var pure3 = /* @__PURE__ */ pure(applicativeEffect);
 var bindFlipped2 = /* @__PURE__ */ bindFlipped(bindMaybe);
-var printHash = function(text5) {
-  return bind2(attempt(toAff(getHash(text5))))(function(msg) {
-    if (msg instanceof Left) {
-      return log4("Something went wrong: " + message(msg.value0));
-    }
-    ;
-    if (msg instanceof Right) {
-      return log4(msg.value0);
-    }
-    ;
-    throw new Error("Failed pattern match at Main (line 37, column 5 - line 39, column 34): " + [msg.constructor.name]);
-  });
-};
 var answers = ["58f998155cbd12c2e3812f47f3bd4bf44b571c10048416fa9277abd5d183c4", "38d4467b57ef9c6c4fb296111635f657be938c1aa9c99ad77f34df789eba36", "1220157f50d86c46f2c1cf380b8957922b41fcd4d80c6be6a4df517c2cbdeda", "1e23ecd6ed7ce722c52e235e790377c93c729e82d9e533395e98f80b8b93d15", "5642f1b7dff894ce51e7b55dd31e61c101f7bc84eb515d28c6f36828b451ff2"];
 var verifyHash = function(asciiElem) {
   return function(text5) {
@@ -2552,12 +2539,12 @@ var verifyHash = function(asciiElem) {
             return "incorrect";
           }
           ;
-          throw new Error("Failed pattern match at Main (line 48, column 19 - line 50, column 46): " + []);
+          throw new Error("Failed pattern match at Main (line 40, column 19 - line 42, column 46): " + []);
         }();
         return applySecond2(liftEffect2(setClassName(className2)(asciiElem)))(liftEffect2(applySecond1(setTimeout2(1e3)(setClassName("")(asciiElem)))(pure3(unit))));
       }
       ;
-      throw new Error("Failed pattern match at Main (line 45, column 5 - line 50, column 46): " + [hash2.constructor.name]);
+      throw new Error("Failed pattern match at Main (line 37, column 5 - line 42, column 46): " + [hash2.constructor.name]);
     });
   };
 };
@@ -2577,7 +2564,7 @@ var onButtonPress = function(v) {
         return value3(v1.value0)();
       }
       ;
-      throw new Error("Failed pattern match at Main (line 60, column 13 - line 62, column 26): " + [v1.constructor.name]);
+      throw new Error("Failed pattern match at Main (line 52, column 13 - line 54, column 26): " + [v1.constructor.name]);
     }();
     if (asciiElem instanceof Nothing) {
       return log2("Could not find ascii logo!")();
@@ -2587,7 +2574,7 @@ var onButtonPress = function(v) {
       return launchAff_(verifyHash(asciiElem.value0)(text5))();
     }
     ;
-    throw new Error("Failed pattern match at Main (line 64, column 5 - line 66, column 55): " + [asciiElem.constructor.name]);
+    throw new Error("Failed pattern match at Main (line 56, column 5 - line 58, column 55): " + [asciiElem.constructor.name]);
   };
 };
 var main = function __do() {
@@ -2603,13 +2590,12 @@ var main = function __do() {
     return addEventListener(click2)(listener)(true)(toEventTarget(buttonElem.value0))();
   }
   ;
-  throw new Error("Failed pattern match at Main (line 75, column 5 - line 79, column 71): " + [buttonElem.constructor.name]);
+  throw new Error("Failed pattern match at Main (line 67, column 5 - line 71, column 71): " + [buttonElem.constructor.name]);
 };
 export {
   answers,
   getHash,
   main,
   onButtonPress,
-  printHash,
   verifyHash
 };
