@@ -2568,7 +2568,7 @@ var bindFlipped2 = /* @__PURE__ */ bindFlipped(bindMaybe);
 var apply2 = /* @__PURE__ */ apply(applyMaybe);
 var map6 = /* @__PURE__ */ map(functorMaybe);
 var pure1 = /* @__PURE__ */ pure(applicativeMaybe);
-var answers = ["58f998155cbd12c2e3812f47f3bd4bf44b571c10048416fa9277abd5d183c4", "38d4467b57ef9c6c4fb296111635f657be938c1aa9c99ad77f34df789eba36", "1220157f50d86c46f2c1cf380b8957922b41fcd4d80c6be6a4df517c2cbdeda", "1e23ecd6ed7ce722c52e235e790377c93c729e82d9e533395e98f80b8b93d15", "5642f1b7dff894ce51e7b55dd31e61c101f7bc84eb515d28c6f36828b451ff2", "444329bb3220eac4fdb6f68ca3fbbba07d8ac4d9badc5a20b8fa7749fff33750", "026f1639cd89b6f771bd12184e0161cffabd75f6f3f47983043db99e288e7df", "a35632bd3ebf5226c1176e3d9cb6ae1583f1f101cba578ee834abe1fb84"];
+var answers = ["58f998155cbd12c2e3812f47f3bd4bf44b571c10048416fa9277abd5d183c4", "38d4467b57ef9c6c4fb296111635f657be938c1aa9c99ad77f34df789eba36", "1220157f50d86c46f2c1cf380b8957922b41fcd4d80c6be6a4df517c2cbdeda", "1e23ecd6ed7ce722c52e235e790377c93c729e82d9e533395e98f80b8b93d15", "5642f1b7dff894ce51e7b55dd31e61c101f7bc84eb515d28c6f36828b451ff2", "444329bb3220eac4fdb6f68ca3fbbba07d8ac4d9badc5a20b8fa7749fff33750", "026f1639cd89b6f771bd12184e0161cffabd75f6f3f47983043db99e288e7df", "a35632bd3ebf5226c1176e3d9cb6ae1583f1f101cba578ee834abe1fb84", "1749d4f7e7fc2320579434da47e1ddc5175ceafe1eaaaa92d13cabc39ebf87c"];
 var verifyHash = function(asciiElem) {
   return function(resultElem) {
     return function(text5) {
