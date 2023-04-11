@@ -121,3 +121,10 @@ div.container button:hover
 {
     background-color: #a74de3;
 }
+
+p.secret 
+{
+    margin: 0px;
+    padding: 0px;
+    color: rgb(37, 37, 37);
+}
